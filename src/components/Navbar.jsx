@@ -7,7 +7,7 @@ const Navbar = () => {
       <nav class="navbar navbar-expand-lg bg-light">
         <div class="container-fluid">
           <a class="navbar-brand" href="#">
-            Navbar
+            Management
           </a>
           <button
             class="navbar-toggler"
@@ -19,14 +19,26 @@ const Navbar = () => {
           </button>
           <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-              <a class="nav-link" href="#">
-                <Link to="student">Student</Link>
+              <a class="nav-link " href="#">
+                <Link
+                  to="student"
+                  className="text-decoration-none text-secondary"
+                >
+                  Student
+                </Link>
               </a>
               <a class="nav-link" href="#">
-                <Link to="/">Dashboard</Link>
+                <Link to="/" className="text-decoration-none text-secondary">
+                  Dashboard
+                </Link>
               </a>
               <a class="nav-link" href="#">
-                <Link to="department">Department</Link>
+                <Link
+                  to="department"
+                  className="text-decoration-none text-secondary"
+                >
+                  Department
+                </Link>
               </a>
             </div>
           </div>

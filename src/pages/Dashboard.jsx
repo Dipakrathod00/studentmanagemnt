@@ -29,6 +29,7 @@ const Dashboard = () => {
                   <th scope="col">name</th>
                   <th scope="col">email</th>
                   <th scope="col">phone no.</th>
+                  <th scope="col">fees</th>
                   <th scope="col">gender</th>
                   <th scope="col">department</th>
                 </tr>
@@ -37,12 +38,30 @@ const Dashboard = () => {
                 {data?.map((item, index) => {
                   return (
                     <tr key={index}>
-                      <th scope="row">{index + 1}</th>
-                      <td>{item.name}</td>
-                      <td>{item.email}</td>
-                      <td>{item.phone}</td>
-                      <td>{item.gender}</td>
-                      <td>{item.department}</td>
+                      {item.fees == "paid" ? (
+                        <>
+                          <th scope="row">{index + 1}</th>
+                          <td>{item.name}</td>
+                          <td>{item.email}</td>
+                          <td>{item.phone}</td>
+                          <td>{item.fees}</td>
+                          <td>{item.gender}</td>
+                          <td>{item.department}</td>
+                        </>
+                      ) : (
+                        searchData && (
+                          <>
+                            <th scope="row">{index + 1}</th>
+                            {console.log(searchData)}
+                            <td>{item.name}</td>
+                            <td>{item.email}</td>
+                            <td>{item.phone}</td>
+                            <td>{item.fees}</td>
+                            <td>{item.gender}</td>
+                            <td>{item.department}</td>
+                          </>
+                        )
+                      )}
                     </tr>
                   );
                 })}

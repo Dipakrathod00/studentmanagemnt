@@ -17,17 +17,23 @@ const studentSlice = createSlice({
     },
     DeleteDepartment: (state, action) => {
       state.department = action.payload;
-      
     },
     DeleteStudent: (state, action) => {
       state.student = action.payload;
-      
+    },
+    UpdateStudent: (state, action) => {
+      state.student = action.payload;
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { Addstudent, AddDepartment, DeleteDepartment, DeleteStudent } =
-  studentSlice.actions;
+export const {
+  Addstudent,
+  AddDepartment,
+  DeleteDepartment,
+  DeleteStudent,
+  UpdateStudent,
+} = studentSlice.actions;
 
 export default studentSlice.reducer;
