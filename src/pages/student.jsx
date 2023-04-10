@@ -9,11 +9,13 @@ const validationSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
   phone: Yup.string().required("phone is required"),
   gender: Yup.string().required("gender is required"),
-  department: Yup.string().required("department is required or add department"),
+  fees: Yup.string().required("fees is required"),
+  //   department: Yup.string().required("department is required or add department"),
 });
 
 const Student = () => {
   const [studentId, setStudentId] = useState(1);
+  const [departmentname, setDepartmentname] = useState("");
   const dispatch = useDispatch();
   const { student } = useSelector((state) => state.counter);
   const { department } = useSelector((state) => state.counter);
@@ -51,17 +53,24 @@ const Student = () => {
                 <div>
                   <h1>Student Section</h1>
                   <Formik
+                    enableReinitialize
                     initialValues={{
                       name: "",
                       email: "",
                       phone: "",
                       gender: "",
-                      department: "",
+                      //   department: "",
                     }}
                     validationSchema={validationSchema}
                     onSubmit={(values) => {
                       console.log(values);
-                      dispatch(Addstudent({ ...values, id: studentId }));
+                      dispatch(
+                        Addstudent({
+                          ...values,
+                          id: studentId,
+                          department: departmentname,
+                        })
+                      );
                       setStudentId((pre) => pre + 1);
                     }}
                   >
@@ -73,6 +82,7 @@ const Student = () => {
                       handleChange,
                       handleReset,
                       handleSubmit,
+                      setFieldValue,
                     }) => (
                       <Form>
                         {console.log(values, errors)}
@@ -117,26 +127,31 @@ const Student = () => {
                         </div>
                         <div>
                           <label htmlFor="fees">Fees paid</label>
-                          <input
+                          {/* <input
                             className="form-control"
                             type="fees"
                             name="fees"
                             value={values.fees}
                             onChange={handleChange}
-                          />
+                          /> */}
+                          <select
+                            onChange={handleChange}
+                            value={values.fees}
+                            name="fees"
+                            className="form-control"
+                          >
+                            <option value="0" selected disabled>
+                              choose fees
+                            </option>
+                            <option value="paid">paid</option>
+                            <option value="unpaid">unpaid</option>
+                          </select>
                           {errors.fees && touched.fees ? (
                             <div className="text-danger">{errors.fees}</div>
                           ) : null}
                         </div>
                         <div>
                           <label htmlFor="gender">Gender</label>
-                          {/* <input
-                            className="form-control"
-                            type="gender"
-                            name="gender"
-                            value={values.gender}
-                            onChange={handleChange}
-                          /> */}
                           <select
                             onChange={handleChange}
                             value={values.gender}
@@ -155,27 +170,22 @@ const Student = () => {
                         </div>
                         <div>
                           <label htmlFor="department">Department</label>
-                          {/* <input
-                            className="form-control"
-                            type="department"
-                            value={values.department}
-                            name="department"
-                            onChange={handleChange}
-                          /> */}
                           <select
                             className="form-control mb-3"
-                            onChange={handleChange}
-                            type="department"
-                            value={values.department}
-                            name="department"
+                            onChange={(e) => setDepartmentname(e.target.value)}
+                            required
+                            // type="department"
+                            // value={values.department}
+                            // name="department"
                           >
                             <option value="0" selected disabled>
                               choose department
                             </option>
-                            {department?.map((item) => {
-                              console.log(item.name);
+                            {department?.map((item, index) => {
                               return (
-                                <option value={item.name}>{item.name}</option>
+                                <option value={item.name} key={item.name}>
+                                  {item.name}
+                                </option>
                               );
                             })}
                           </select>
