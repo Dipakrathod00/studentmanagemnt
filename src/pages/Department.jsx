@@ -1,20 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { useDispatch, useSelector } from "react-redux";
+import { AddDepartment, DeleteDepartment } from "../store/slice";
 
 const validationSchema = Yup.object().shape({
-  firstName: Yup.string().required("First name is required"),
-  lastName: Yup.string().required("Last name is required"),
-  email: Yup.string().email("Invalid email").required("Email is required"),
-  password: Yup.string()
-    .min(6, "Password must be at least 6 characters")
-    .required("Password is required"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password"), null], "Passwords must match")
-    .required("Confirm password is required"),
+  name: Yup.string().required("First name is required"),
 });
 
 const Department = () => {
+  const [departmentId, setDepartmentId] = useState(1);
+  const dispatch = useDispatch();
+
+  const { department } = useSelector((state) => state.counter);
+  const handleDelete = (id) => {
+    let data = department.filter((item) => {
+      return item.id != id;
+    });
+    dispatch(DeleteDepartment(data));
+  };
   return (
     <div className="container">
       <button
@@ -23,7 +27,7 @@ const Department = () => {
         data-bs-toggle="modal"
         data-bs-target="#exampleModal"
       >
-        Add student
+        Add department
       </button>
 
       {/* <!-- Modal --> */}
@@ -41,64 +45,48 @@ const Department = () => {
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> */}
               <div className="row">
                 <div className="col-sm-12">
-                  <h1>Registration Form</h1>
                   <Formik
                     initialValues={{
-                      firstName: "",
-                      lastName: "",
-                      email: "",
-                      password: "",
-                      confirmPassword: "",
+                      name: "",
                     }}
                     validationSchema={validationSchema}
-                    onSubmit={(values, { setSubmitting }) => {
-                      setTimeout(() => {
-                        alert(JSON.stringify(values, null, 2));
-                        setSubmitting(false);
-                      }, 400);
+                    onSubmit={(values) => {
+                      console.log(values);
+                      dispatch(AddDepartment({ ...values, id: departmentId }));
+                      setDepartmentId((pre) => pre + 1);
                     }}
                   >
-                    {({ isSubmitting }) => (
+                    {({
+                      isSubmitting,
+                      errors,
+                      touched,
+                      values,
+                      handleChange,
+                      handleReset,
+                      handleSubmit,
+                    }) => (
                       <Form>
                         <div>
-                          <label htmlFor="firstName">First Name</label>
+                          <label htmlFor="name">Department Name</label>
                           <input
-                            className="form-control"
+                            className="form-control mb-3 "
                             type="text"
-                            name="firstName"
+                            name="name"
+                            onChange={handleChange}
+                            value={values.name}
                           />
-                          <ErrorMessage name="firstName" />
-                        </div>
-                        <div>
-                          <label htmlFor="lastName">Last Name</label>
-                          <input
-                            className="form-control"
-                            type="text"
-                            name="lastName"
-                          />
-                          <ErrorMessage name="lastName" />
-                        </div>
-                        <div>
-                          <label htmlFor="email">Email</label>
-                          <input
-                            className="form-control"
-                            type="email"
-                            name="email"
-                          />
-                          <ErrorMessage name="email" />
+                          {errors.name && touched.name ? (
+                            <div className="text-danger">{errors.name}</div>
+                          ) : null}
                         </div>
                         <button
                           type="button"
-                          class="btn btn-secondary"
+                          class="btn btn-secondary "
                           data-bs-dismiss="modal"
                         >
                           Close
                         </button>
-                        <button
-                          type="submit"
-                          disabled={isSubmitting}
-                          class="btn btn-primary"
-                        >
+                        <button type="submit" class="btn btn-primary ms-3">
                           Save changes
                         </button>
                       </Form>
@@ -110,6 +98,42 @@ const Department = () => {
             <div class="modal-body">...</div>
             <div class="modal-footer"></div>
           </div>
+        </div>
+      </div>
+      <div className="row mt-3">
+        <div className="col-sm-12">
+          {department?.length > 0 ? (
+            <table class="table table-dark table-striped table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">name</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {department?.map((item, index) => {
+                  return (
+                    <tr key={index}>
+                      <th scope="row">{index + 1}</th>
+                      <td>{item.name}</td>
+                      <td>
+                        <button
+                          type="button"
+                          className="btn btn-danger ms-2"
+                          onClick={() => handleDelete(item.id)}
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          ) : (
+            <h1>No Data Found</h1>
+          )}
         </div>
       </div>
     </div>
